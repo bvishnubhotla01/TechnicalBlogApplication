@@ -20,9 +20,9 @@ public class HomeController {
 
     @RequestMapping("/")
     public String getAllPosts(Model model) {
-       ArrayList<Post> posts = postService.getAllPosts();
+           ArrayList<Post> posts = postService.getAllPosts();
 
-       model.addAttribute("posts", posts);
+           model.addAttribute("posts", posts);
         return "index";
     }
 }
