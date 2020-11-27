@@ -22,7 +22,10 @@ public class PostRepository {
 
     public Post getLatestPost() {
         EntityManager entityManager = emf.createEntityManager();
-        return entityManager.find(Post.class, 3);
+        TypedQuery<Post> query = entityManager.createQuery("SELECT p FROM Post p WHERE p.id = :postId", Post.class);
+        query.setParameter("id", 3);
+
+        return query.getSingleResult();
     }
 
     public Post createPost(Post newPost) {
