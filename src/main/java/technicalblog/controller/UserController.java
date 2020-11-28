@@ -1,6 +1,7 @@
 package technicalblog.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.UsesSunHttpServer;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,8 @@ import technicalblog.model.UserProfile;
 import technicalblog.service.PostService;
 import technicalblog.service.UserService;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,9 +49,10 @@ public class UserController {
     }
 
     @RequestMapping(value = "users/login", method = RequestMethod.POST)
-    public String loginUser(User user) {
+    public String loginUser(User user, HttpSession session) {
         User existingUser = userService.login(user);
         if (existingUser != null) {
+            session.setAttribute("loggedUser", existingUser);
             return "redirect:/posts";
         } else {
             return "users/login";
@@ -56,10 +60,12 @@ public class UserController {
     }
 
     @RequestMapping(value = "users/logout", method = RequestMethod.POST)
-    public String logout(Model model) {
-        List<Post> posts = postService.getAllPosts();
+    public String logout(Model model, HttpSession session) {
+        session.invalidate();
 
+        List<Post> posts = postService.getAllPosts();
         model.addAttribute("posts", posts);
+
         return "index";
     }
 }
